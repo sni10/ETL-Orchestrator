@@ -1,5 +1,9 @@
 # Оркестратор ETL‑процессов на базе Apache Airflow
 
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](https://github.com/sni10/ETL-Orchestrator/blob/main/LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/sni10/ETL-Orchestrator?style=for-the-badge&logo=github)](https://github.com/sni10/ETL-Orchestrator/releases/latest)
+
 > Дисклеймер. Этот репозиторий описывает внутренний оркестратор ETL‑процессов на базе Apache Airflow. Примеры конфигураций и DAG‑ов не являются универсальным рецептом и требуют адаптации под конкретную инфраструктуру. Все секреты и данные доступа должны задаваться через переменные окружения или секрет‑хранилища, а не в коде и не в README.
 
 ## Git Flow
