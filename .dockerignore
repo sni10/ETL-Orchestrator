@@ -1,0 +1,9 @@
+.git
+.env
+__pycache__/
+*.pyc
+logs/
+db/
+data/
+venv/
+postgres-db-volume/

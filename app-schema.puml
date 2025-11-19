@@ -1,0 +1,114 @@
+@startuml
+hide empty members
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Settings {
+    +get_global_config(): dict
+    +get_database_config(source: str, db_number: int): dict
+    +get_kafka_config(source: str, topic_type: str): dict
+}
+
+interface IConnection {
+    +connect()
+    +cursor()
+    +commit()
+    +close()
+}
+
+abstract class BaseConnection implements IConnection {
+    +__init__(db_config: dict)
+    +connect()
+    +cursor()
+    +commit()
+    +close()
+}
+
+class PostgresConnection extends BaseConnection {
+    +__init__(db_config: dict)
+    +connect()
+    +cursor()
+    +commit()
+    +close()
+}
+
+class ConnectionFactory {
+    +create_connection(source: str, db_number: int): BaseConnection
+}
+
+interface IRepository {
+    +get_data(offset: int, limit: int): list
+    +save_data(data: list)
+    +close()
+}
+
+class GenericRepository implements IRepository {
+    +get_data(offset: int, limit: int): list
+    +save_data(rows: list)
+    +close()
+}
+
+class RepositoryFactory {
+    +create_repository(source: str, db_number: int): IRepository
+}
+
+class ServiceFactory {
+    +create_ingestion_service(source: str): IngestionService
+    +create_loading_service(source: str): LoadingService
+}
+
+interface IConsumer {
+    +get_queue_size(): int
+    +consume_messages(max_records: int): list
+    +commit()
+    +close()
+}
+
+class KafkaConsumerClient implements IConsumer {
+    +__init__(kafka_config: dict, global_config: dict)
+    +get_queue_size(): int
+    +consume_messages(max_records: int): list
+    +commit()
+    +close()
+}
+
+interface IProducer {
+    +send_message(message: dict)
+    +flush()
+    +close()
+}
+
+class KafkaProducerClient implements IProducer {
+    +__init__(kafka_config: dict, global_config: dict)
+    +send_message(message: dict)
+    +flush()
+    +close()
+}
+
+class IngestionService {
+    +__init__(global_config: dict, source: str)
+    +ingest_data()
+}
+
+class LoadingService {
+    +__init__(global_config: dict, source: str)
+    +load_data()
+    +prepare_data_for_saving(messages: list): list
+}
+
+IConnection <|-- BaseConnection
+BaseConnection <|-- PostgresConnection
+ConnectionFactory --> BaseConnection
+IRepository <|.. GenericRepository
+RepositoryFactory --> GenericRepository
+ServiceFactory --> IngestionService
+ServiceFactory --> LoadingService
+KafkaConsumerClient --> IConsumer
+KafkaProducerClient --> IProducer
+IngestionService --> RepositoryFactory
+IngestionService --> KafkaProducerClient
+IngestionService --> KafkaConsumerClient
+LoadingService --> RepositoryFactory
+LoadingService --> KafkaConsumerClient
+
+@enduml
